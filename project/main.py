@@ -7,14 +7,6 @@ from . import db
 
 main = Blueprint('main', __name__)
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'txt'}
-
-
 @main.route('/')
 def index():
     return render_template('index.html')
@@ -22,10 +14,9 @@ def index():
 @main.route('/profile')
 @login_required
 def profile():
-
     return render_template('profile.html', name=current_user.name)
 
-@main.route('/add_msisdn', methods=['GET', 'POST'])
+@main.route('/add_msisdn_single', methods=['GET', 'POST'])
 @login_required
 def add_msisdn():
     if request.method == 'POST':
@@ -33,49 +24,48 @@ def add_msisdn():
         if 'msisdn' in request.form:
             msisdn = request.form['msisdn']
             service_line = request.form['service_line']
-            # Add code to whitelist the msisdn for the selected service
-
-
             new_msisdn = WhitelistedMSISDN(msisdn=msisdn, service_line=service_line)
             db.session.add(new_msisdn)
             db.session.commit()
-
-            flash('MSISDN added successfully!', 'success')
             return redirect(url_for('main.profile'))
+    return render_template('add_msisdn_single.html')
 
-        # If file uploaded
-        if 'file' in request.files:
-            file = request.files['file']
-            if file.filename == '':
-                flash('No selected file', 'error')
-                return redirect(request.url)
-            if file and allowed_file(file.filename):
+@main.route('/add_msisdn_bulk', methods=['GET', 'POST'])
+@login_required
+def add_msisdn_bulk():
+    if request.method == 'POST':
+        print(request.files)
+        file = request.files.get('file')
+
+        if file:
+            # Check if the file has a txt extension
+            if file.filename.endswith('.txt'):
+                # Securely save the file
                 filename = secure_filename(file.filename)
-                file_path = os.path.join(UPLOAD_FOLDER, filename)
-                file.save(file_path)
-                # Process the uploaded file to add MSISDNs to the database
-                with open(file_path, 'r') as f:
+                file.save(f'project/uploads/{file.filename}')
+                print("File saved successfully.")
+                with open(f'project/uploads/{file.filename}', 'r') as f:
                     for line in f:
                         msisdn = line.strip()
                         service_line = request.form['service_line']
-
                         new_msisdn2 = WhitelistedMSISDN(msisdn=msisdn, service_line=service_line)
-                        db.session.add_all(new_msisdn2)
+                        db.session.add(new_msisdn2)
                         db.session.commit()
-                        # Add code to whitelist the msisdn for the selected service
-                flash('File uploaded and MSISDNs added successfully!', 'success')
+                        flash('File uploaded and MSISDNs added successfully!', 'success')
                 return redirect(url_for('main.profile'))
-            else:
-                flash('Invalid file type', 'error')
-                return redirect(request.url)
-    return render_template('add_msisdn.html')
 
-@main.route('/delete_msisdn/<int:msisdn_id>', methods=['POST'])
-@login_required
-def delete_msisdn(msisdn_id):
-    # Add code here to delete the msisdn with the given ID
-    flash('MSISDN deleted successfully!', 'success')
-    return redirect(url_for('main.profile'))
+    return render_template('add_msisdn_bulk.html')
+
+# @main.route('/delete_msisdn/<string:msisdn_value>', methods=['POST'])
+# @login_required
+# def delete_msisdn(msisdn_value):
+#     msisdn = WhitelistedMSISDN.query.filter_by(msisdn=msisdn_value).first_or_404()
+#     if request.method == 'POST':
+#         db.session.delete(msisdn)
+#         db.session.commit()
+#         flash('MSISDN deleted successfully.', 'success')
+#         return redirect(url_for('main.profile'))
+#     return render_template('error.html', error='Invalid request method.')
 
 @main.route('/view_whitelist/')
 @login_required
@@ -83,6 +73,3 @@ def view_whitelist():
     # Add code here to fetch and display all whitelisted msisdns for each service
     msisdns = WhitelistedMSISDN.query.all()
     return render_template('view_whitelist.html', msisdns=msisdns)
-
-
-

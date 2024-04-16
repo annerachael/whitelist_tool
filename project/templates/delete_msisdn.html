@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Add your custom CSS styles here */
+    .confirmation-box {
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin: 20px auto;
+        max-width: 400px;
+        text-align: center;
+    }
+
+    .confirmation-box h2 {
+        margin-top: 0;
+    }
+
+    .confirmation-box p {
+        margin-bottom: 20px;
+    }
+
+    .confirmation-box button {
+        padding: 10px 20px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .confirmation-box button:hover {
+        background-color: #c82333;
+    }
+</style>
+
+<div class="confirmation-box">
+    <h2>Delete MSISDN</h2>
+    <p>Are you sure you want to delete this MSISDN?</p>
+    <form action="{{ url_for('main.delete_msisdn', msisdn_value=msisdn.value) }}" method="post">
+        {{ csrf_token() }}
+        <button type="submit">Delete</button>
+    </form>
+    <a href="{{ url_for('main.profile') }}">Cancel</a>
+</div>
+{% endblock %}
