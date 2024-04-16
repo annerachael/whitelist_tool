@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-
 {% block content %}
+
 <style>
     /* Add your custom CSS styles here */
     label {
@@ -24,12 +24,9 @@
 </style>
 
 <img class="background-image" src="nairobicity.jpg" alt="Background Image">
-
-<h2>Delete MSISDN</h2>
-<form method="post" action="{{ url_for('main.delete_msisdn') }}">
-    <label for="msisdn">MSISDN:</label>
-    <input type="text" id="msisdn" name="msisdn" placeholder="Enter MSISDN to delete">
-    <br><br>
+<form action="/delete_msisdn_bulk" method="post" enctype="multipart/form-data">
+    <input type="file" name="file">
     <button type="submit">Delete</button>
 </form>
+
 {% endblock %}

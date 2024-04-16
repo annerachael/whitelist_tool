@@ -56,16 +56,51 @@ def add_msisdn_bulk():
 
     return render_template('add_msisdn_bulk.html')
 
-# @main.route('/delete_msisdn/<string:msisdn_value>', methods=['POST'])
-# @login_required
-# def delete_msisdn(msisdn_value):
-#     msisdn = WhitelistedMSISDN.query.filter_by(msisdn=msisdn_value).first_or_404()
-#     if request.method == 'POST':
-#         db.session.delete(msisdn)
-#         db.session.commit()
-#         flash('MSISDN deleted successfully.', 'success')
-#         return redirect(url_for('main.profile'))
-#     return render_template('error.html', error='Invalid request method.')
+@main.route('/delete_msisdn', methods=['GET', 'POST'])
+@login_required
+def delete_msisdn():
+    if request.method == 'POST':
+        msisdn = request.form.get('msisdn')
+        if msisdn:
+            msisdn_to_delete = WhitelistedMSISDN.query.filter_by(msisdn=msisdn).first()
+            if msisdn_to_delete:
+                db.session.delete(msisdn_to_delete)
+                db.session.commit()
+                flash('MSISDN deleted successfully.', 'success')
+                return redirect(url_for('main.profile'))
+            else:
+                flash('MSISDN not found.', 'error')
+        else:
+            flash('Please provide an MSISDN.', 'error')
+    return render_template('delete_msisdn.html')
+
+from flask import request
+
+@main.route('/delete_msisdn_bulk', methods=['GET', 'POST'])
+@login_required
+def delete_msisdn_bulk():
+    if request.method == 'POST':
+        # Process the uploaded file
+        file = request.files.get('file')
+        if file:
+            # Check if the file has a txt extension
+            if file.filename.endswith('.txt'):
+                # Securely save the file
+                filename = secure_filename(file.filename)
+                file.save(f'project/uploads/{file.filename}')
+                print("File saved successfully.")
+                with open(f'project/uploads/{file.filename}', 'r') as f:
+                    for line in f:
+                        msisdn = line.strip()
+                        # Delete MSISDN from the database
+                        msisdn_to_delete = WhitelistedMSISDN.query.filter_by(msisdn=msisdn).first()
+                        if msisdn_to_delete:
+                            db.session.delete(msisdn_to_delete)
+                            db.session.commit()
+                # Delete the uploaded file after processing
+                os.remove(f'project/uploads/{file.filename}')
+                return redirect(url_for('main.profile'))
+    return render_template('delete_bulk_msisdn.html')
 
 @main.route('/view_whitelist/')
 @login_required
