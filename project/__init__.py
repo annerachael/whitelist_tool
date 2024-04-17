@@ -6,11 +6,11 @@ from flask_login import LoginManager
 db = SQLAlchemy()
 
 def create_app():
+    #define app so that we can use in later for flask webframework
     app = Flask(__name__)
 
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-    app.config['UPLOAD_FOLDER'] = 'static/files'
 
     db.init_app(app)
     login_manager = LoginManager()

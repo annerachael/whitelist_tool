@@ -2,6 +2,7 @@ from flask_login import UserMixin
 from . import db
 
 class User(UserMixin, db.Model):
+    #create a table within the database with user information
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True) # primary keys are required by SQLAlchemy
     email = db.Column(db.String(100), unique=True)
@@ -9,6 +10,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(1000))
 
 class WhitelistedMSISDN(UserMixin, db.Model):
+    #create a table within the database for msisdn whitelist
     __tablename__ = 'whitelisted_msisdn'
     id = db.Column(db.Integer, primary_key=True)
     msisdn = db.Column(db.Integer, unique=True, nullable=False)

@@ -9,16 +9,19 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
+    #renders the main index.html
     return render_template('index.html')
 
 @main.route('/profile')
 @login_required
 def profile():
+    #renders the users profile
     return render_template('profile.html', name=current_user.name)
 
 @main.route('/add_msisdn_single', methods=['GET', 'POST'])
 @login_required
 def add_msisdn():
+    #add only a single msisdn onto the database
     if request.method == 'POST':
         # If form submitted
         if 'msisdn' in request.form:
@@ -33,6 +36,7 @@ def add_msisdn():
 @main.route('/add_msisdn_bulk', methods=['GET', 'POST'])
 @login_required
 def add_msisdn_bulk():
+    #add bulk msisdns from a file onto the database
     if request.method == 'POST':
         print(request.files)
         file = request.files.get('file')
@@ -59,6 +63,7 @@ def add_msisdn_bulk():
 @main.route('/delete_msisdn', methods=['GET', 'POST'])
 @login_required
 def delete_msisdn():
+    #delete a single msisdn from the database
     if request.method == 'POST':
         msisdn = request.form.get('msisdn')
         if msisdn:
@@ -79,6 +84,7 @@ from flask import request
 @main.route('/delete_msisdn_bulk', methods=['GET', 'POST'])
 @login_required
 def delete_msisdn_bulk():
+    #delete bulk records of msisdns from the database
     if request.method == 'POST':
         # Process the uploaded file
         file = request.files.get('file')
