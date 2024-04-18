@@ -24,8 +24,9 @@ This project does something really cool.
 To get started with this project, follow these steps:
 
 1. Clone the repository: `git clone git@github.com:annerachael/whitelist_tool.git`
-2. Install dependencies: `pip install requirements.txt`
-3. Run the project: `flask run`
+2. Create virtual env `python3 -m venv venv`
+3. Install dependencies: `pip install -r requirements.txt`
+4. Run the project: `flask run`
 
 ## Usage
 

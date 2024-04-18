@@ -1,0 +1,65 @@
+
+{% extends "base.html" %}
+{% block content %}
+<style>
+  /* Add your custom CSS styles here */
+  .container {
+    text-align: center;
+    margin-top: 50px;
+  }
+
+  .title {
+    animation: bounce 2s infinite; /* Apply the 'bounce' animation to the title */
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); } /* Start and end state */
+    50% { transform: translateY(-20px); } /* Middle state */
+  }
+
+  .picture-animation-container {
+    overflow: hidden;
+    max-width: 80%;
+    margin: 20px auto;
+  }
+
+  .picture-animation {
+    display: flex;
+    transition: transform 2s ease-in-out; /* Apply the transition effect */
+  }
+
+  .picture-animation img {
+    width: 300px; /* Adjust the width of the images as needed */
+    margin-right: 20px; /* Add some spacing between images */
+  }
+
+  .picture-animation:hover {
+    transform: translateX(50px); /* Move the images to the right on hover */
+  }
+</style>
+
+<div class="container">
+  <h1 class="title">
+    WhiteList Tool
+  </h1>
+  <h2 class="subtitle">
+    Whitelisting solution made easy
+  </h2>
+  <p>
+    Whitelist tool is used to help users get their whitelist solutions for whatever data they need to protect.
+  </p>
+  <p>
+    This project was inspired by an appreciation of customized customer service.
+  </p>
+  <h6>
+    <strong>User information:</strong>
+  </h6>
+  <p>
+    Github link: https://github.com/annerachael/whitelist_tool
+    <br>
+    LinkedIn: https://www.linkedin.com/in/anne-waiyuyu-1a780516b/
+  </p>
+
+  </div>
+</div>
+{% endblock %}
